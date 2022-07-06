@@ -22,7 +22,7 @@ router.post(`/`, (req, res) => {
    product.save().then((createdProduct => {
     res.status(201).json(createdProduct)
    })).catch((err) => {
-    res.status(500).json9({
+    res.status(500).json({
         error: err,
         success: false
     })
