@@ -4,7 +4,6 @@ const { Category } = require('../models/category');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-
 router.get(`/`, async (req, res) => {
 
     let filter = {};
@@ -111,7 +110,7 @@ router.get(`/get/count`, async (req, res) => {
         });
 })
 
-router.get(`/get/featured/:count`, async (req, res) => {
+router.get(`/getfeatured/:count`, async (req, res) => {
     const count = req.params.count ? req.params.count : 0
     const products = await Product.find({isFeatured: true}).limit(+count)
 

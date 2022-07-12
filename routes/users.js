@@ -21,6 +21,7 @@ router.get('/:id',async(req, res) =>{
     }
     res.status(200).send(user);
 })
+
   router.post('/', async (req, res) => {
     let user = new User({
         name: req.body.name,
@@ -36,7 +37,6 @@ router.get('/:id',async(req, res) =>{
     })
     user = await user.save();
    
-
     if(!user)
     return res.status(400).send('The user cannot be created!')
 
@@ -78,7 +78,7 @@ router.put('/:id', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const user = await User.findOne({email: req.body.email})
-
+    const secret = process.env.secret;
     if(!user) {
         return res.status(400).send('The user is not found');
     }
@@ -86,9 +86,11 @@ router.post('/login', async (req, res) => {
     if(user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
         const token = jwt.sign(
             {
-                userId: user.id
+                userId: user.id,
+                isAdmin: user.isAdmin
             },
-            'secret'
+            secret,
+            {expiresIn: '1d'}
         )
 
         res.status(200).send({user: user.email, token: token})
@@ -97,6 +99,28 @@ router.post('/login', async (req, res) => {
     }
 
 
+})
+
+
+router.post ('/register', async (req, res) => {
+    let user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        passwordHash: bcrypt.hashSync(req.body.password, 10),
+        phone: req.body.phone,
+        isAdmin: req.body.isAdmin,
+        street: req.body.street,
+        appartment: req.body.appartment,
+        zip: req.body.zip,
+        city: req.body.city,
+        country: req.body.country,
+})
+user = await user.save();
+
+if(ifuser)
+return res.status(400).send('teh user cannot be created')
+
+res.send(user);
 })
 
 
